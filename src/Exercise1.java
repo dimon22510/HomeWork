@@ -1,4 +1,4 @@
-package MassiveMulti;
+package MassiveMulti.HomeWork;
 
 import java.util.Random;
 import java.util.Scanner;
