@@ -10,31 +10,28 @@ import java.util.Scanner;
 public class Menu {
     private final Scanner scanner;
 
-
     public Menu() {
         this.scanner = new Scanner(System.in);
     }
 
     protected void dateInput() {
         System.out.println("""
-                Выберите пункт меню:\s
-                1)Подсчёт математической операции\s
-                2)Выход\s""");
+                Select a menu item:\s
+                1)Calculating a mathematical operation\s
+                2)Exit\s""");
         int number = this.validateInt();
         if (number == 1) {
-            System.out.println("Введите первое число - ");
+            System.out.println("Enter the first number - ");
             double a = this.validateDouble();
-            System.out.println("Введите второе число - ");
+            System.out.println("Enter the second number - ");
             double b = this.validateDouble();
-            System.out.println("Введите математическую операцию");
+            System.out.println("Enter a mathematical operation");
             char actionType = this.validateChar();
-            System.out.println("Результат: " + chooser(a, b, actionType));
+            System.out.println("Result: " + chooser(a, b, actionType));
             dateInput();
-
         } else if (number == 2) {
-            System.out.println("Всего хорошего!!!");
+            System.out.println("Good luck!!!");
         }
-
     }
 
     private double chooser(double a, double b, char actionType) {
@@ -44,7 +41,7 @@ public class Menu {
                 return calculator.action(a, b);
             case '/':
                 while (b == 0) {
-                    System.out.println("Деление на 0 невозможно. Введите другое число");
+                    System.out.println("Division by 0 is not possible. Please enter another number");
                     b = validateDouble();
                 }
                 calculator = new Division();
@@ -56,16 +53,14 @@ public class Menu {
                 calculator = new Subtraction();
                 return calculator.action(a, b);
             default:
-                System.out.println("Неправильный символ");
+                System.out.println("Wrong character");
                 return 0;
         }
-
-
     }
 
     private int validateInt() {
         while (!scanner.hasNext("[12]")) {
-            System.out.println("Такого пункта в меню нет! Введите существующий пункт меню ");
+            System.out.println("There is no such item on the menu! Enter an existing menu item ");
             scanner.next();
         }
         return scanner.nextInt();
@@ -73,7 +68,7 @@ public class Menu {
 
     private double validateDouble() {
         while (!scanner.hasNextDouble()) {
-            System.out.println("Неверное число, введите правильно число!");
+            System.out.println("Invalid number, please enter the correct number!");
             scanner.next();
         }
         return scanner.nextDouble();
@@ -81,12 +76,11 @@ public class Menu {
 
     private char validateChar() {
         while (!scanner.hasNext("[*/+-]")) {
-            System.out.println("Такой операции не существует. Доступные операции: [+ - * /] !");
+            System.out.println("There is no such operation. Available Operations: [+ - * /] !");
             scanner.next();
         }
         return scanner.next().charAt(0);
     }
-
 }
 
 
