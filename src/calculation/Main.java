@@ -1,8 +1,9 @@
-package calculator;
+package calculation;
 
 public class Main {
     public static void main(String[] args)  {
         Menu menu = new Menu();
-        menu.dateInput();
+        menu.dataInput();
     }
 }
+
