@@ -6,23 +6,22 @@ import calculation.calculator.impl.Division;
 import calculation.calculator.impl.Multiplication;
 import calculation.calculator.impl.Subtraction;
 import calculation.resultoperation.ResultOperationHistory;
-import calculation.resultoperation.impl.AdditionResult;
-import calculation.resultoperation.impl.DivisionResult;
-import calculation.resultoperation.impl.MultiplicationResult;
-import calculation.resultoperation.impl.SubtractionResult;
+import calculation.resultoperation.impl.ResultOperationHistoryImpl;
 
 import java.util.Scanner;
 
 public class Menu {
     private final Scanner scanner;
     private final String REGEX_FOR_INTEGER = "[123]";
-    private String[] historyArray;
-    private int counter;
+    private final String REGEX_FOR_CHAR = "[*/+-]";
+    private int arraySize;
+    private final ResultOperationHistory resultOperationHistory;
 
-    public Menu() {
+
+    public Menu(int arraySize) {
         this.scanner = new Scanner(System.in);
-        this.historyArray = new String[3];
-        this.counter = 0;
+        this.arraySize = arraySize;
+        this.resultOperationHistory = new ResultOperationHistoryImpl(new double[arraySize]);
     }
 
     protected void dataInput() {
@@ -44,9 +43,8 @@ public class Menu {
             System.out.println("Result: " + result);
             dataInput();
         } else if (number == 2) {
-            ResultOperationHistory resultOperationHistory = new AdditionResult();          // Не отличаются в addition от всех остальных, поэтому имплиминтировали только в одном
             System.out.println("The result of the last mathematical operations: ");
-            resultOperationHistory.outputHistory(historyArray);
+            resultOperationHistory.outputHistory();
             dataInput();
         } else if (number == 3) {
             System.out.println("Good luck!!!");
@@ -54,42 +52,29 @@ public class Menu {
     }
 
     private double chooser(double a, double b, char actionType) {
-        Calculator calculator;
-        ResultOperationHistory resultOperationHistory;
         switch (actionType) {
             case '*':
-                resultOperationHistory = new MultiplicationResult();
-                calculator = new Multiplication();
-                return doCalculation(a, b, calculator, resultOperationHistory);
+                return doCalculation(a, b, new Multiplication());
             case '/':
                 while (b == 0) {
                     System.out.println("Division by 0 is not possible. Please enter another number");
                     b = validateDouble();
                 }
-                resultOperationHistory = new DivisionResult();
-                calculator = new Division();
-                return doCalculation(a, b, calculator, resultOperationHistory);
+                return doCalculation(a, b, new Division());
             case '+':
-                resultOperationHistory = new AdditionResult();
-                calculator = new Addition();
-                return doCalculation(a, b, calculator, resultOperationHistory);
+                return doCalculation(a, b, new Addition());
             case '-':
-                resultOperationHistory = new SubtractionResult();
-                calculator = new Subtraction();
-                return doCalculation(a, b, calculator, resultOperationHistory);
+                return doCalculation(a, b, new Subtraction());
             default:
                 System.out.println("Wrong character");
                 return 0;
         }
     }
 
-    private double doCalculation(double a, double b, Calculator calculator, ResultOperationHistory resultOperationHistory) {
-        double result = calculator.action(a, b);
-        if (counter == historyArray.length) {
-            counter = 0;
-        }
-        this.historyArray[counter] = resultOperationHistory.addToHistory(result, a, b);
-        counter++;
+    private double doCalculation(double a, double b, Calculator calculator) {
+        double result;
+        result = calculator.action(a, b);
+        resultOperationHistory.addToHistory(result);
         return result;
     }
 
@@ -110,8 +95,8 @@ public class Menu {
     }
 
     private char validateChar() {
-        while (!scanner.hasNext("[*/+-]")) {
-            System.out.println("There is no such operation. Available Operations: [+ - * /] !");
+        while (!scanner.hasNext(REGEX_FOR_CHAR)) {
+            System.out.println("There is no such operation. Available operations: [+ - * /] !");
             scanner.next();
         }
         return scanner.next().charAt(0);
